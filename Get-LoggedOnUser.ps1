@@ -1,4 +1,10 @@
-function Get-SkLoggedOnUser ($ComputerName) { 
+function Get-LoggedOnUser {
+    [CmdletBinding()]
+    param (
+        [parameter(Mandatory=$True, ValueFromPipeline=$True)]
+        [ValidateNotNullOrEmpty()]
+        [string] $ComputerName
+    ) 
     try {
         $regexa = '.+Domain="(.+)",Name="(.+)"$' 
         $regexd = '.+LogonId="(\d+)"$'
