@@ -1,11 +1,28 @@
-function Remove-Doucheware {
+function Remove-TurboDoucheware {
     [CmdletBinding(SupportsShouldProcess=$True)]
-    param ()
+    param()
+    try {
+        Write-Host "getting provisioned doucheware..." -ForegroundColor Cyan
+        $apps = @(Get-AppxProvisionedPackage -Online | 
+            Select DisplayName,PackageName | 
+                Sort-Object DisplayName | 
+                    Out-GridView -Title "Select Provisioned Douche to Undouche" -OutputMode Multiple)
+        if ($apps.Count -gt 0) {
+            $apps | % { 
+                Remove-AppxProvisionedPackage -PackageName $_.PackageName -AllUsers -Online -ErrorAction SilentlyContinue | Out-Null
+                Write-Host "removed: $($_.DisplayName)" -ForegroundColor Cyan
+            }
+        }
+    }
+    catch {
+        Write-Error $Error[0].Exception.Message
+    }
+    Write-Host "getting user doucheware..." -ForegroundColor Cyan
     try {
         $apps = @(Get-AppxPackage | 
             Select Name,PackageFullName,Status | 
                 Sort-Object Name | 
-                    Out-GridView -Title "Select Doucheware to Undouche" -OutputMode Multiple)
+                    Out-GridView -Title "Select User Douche to Undouche" -OutputMode Multiple)
         if ($apps.Count -gt 0) {
             $apps | Select-Object -ExpandProperty PackageFullName | % {
                 Write-Verbose "removing: $_"
